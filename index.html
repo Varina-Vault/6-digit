@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6-Digit Generator</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #22d3ee;
+            --success-color: #4ade80;
+            --background-color: #111827;
+            --card-background: #1f2937;
+            --text-color: #e5e7eb;
+            --text-light: #9ca3af;
+            --border-color: #4b5563;
+        }
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .card {
+            background-color: var(--card-background);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            font-weight: 300;
+            font-size: 2rem;
+            margin: 0 0 40px 0;
+        }
+        .text-input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid var(--border-color);
+            padding: 12px 0;
+            font-size: 1.2rem;
+            text-align: center;
+            background-color: transparent;
+            color: var(--text-color);
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        .text-input:focus {
+            outline: none;
+            border-bottom-color: var(--primary-color);
+        }
+        .text-input::placeholder {
+            color: var(--text-light);
+            font-weight: 300;
+        }
+        #stringToHash {
+            margin-top: 25px;
+        }
+        .result-wrapper {
+            margin-top: 40px;
+            position: relative;
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 15px 60px 15px 20px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+        #result {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            text-align: left;
+            word-break: break-all;
+        }
+        #copyButton {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        #copyButton:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-50%) scale(1.1);
+        }
+        #copyButton:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        #copyButton .icon {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-light);
+            transition: stroke 0.2s ease;
+        }
+        #copyButton:hover .icon {
+            stroke: var(--text-color);
+        }
+        #copyButton .icon-check {
+            display: none;
+        }
+        #copyButton.copied {
+            background-color: var(--success-color);
+            transform: translateY(-50%) scale(1.1);
+        }
+        #copyButton.copied .icon-copy {
+            display: none;
+        }
+        #copyButton.copied .icon-check {
+            display: inline-block;
+            stroke: var(--card-background);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Prefix & Code Generator</h1>
+        <input type="text" id="prefixString" class="text-input" placeholder="Enter prefix..." autocomplete="off">
+        <input type="text" id="stringToHash" class="text-input" placeholder="String to hash..." autocomplete="off">
+        <div class="result-wrapper">
+            <div id="result">000000</div>
+            <button id="copyButton" title="Copy to clipboard">
+                <svg class="icon icon-copy" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+                <svg class="icon icon-check" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            </button>
+        </div>
+    </div>
+    <script>
+        const prefixElement = document.getElementById('prefixString');
+        const hashInputElement = document.getElementById('stringToHash');
+        const resultElement = document.getElementById('result');
+        const copyButton = document.getElementById('copyButton');
+        const MODULO_VALUE = 1000000n;
+        function debounce(func, delay = 150) {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+        function calculateAndDisplay() {
+            const prefixText = prefixElement.value;
+            const hashText = hashInputElement.value;
+            let hashedCode = '000000';
+            if (hashText.length > 0) {
+                let product = 1n;
+                for (const char of hashText) {
+                    const unicodeValue = BigInt(char.charCodeAt(0));
+                    product = (product * unicodeValue) % MODULO_VALUE;
+                }
+                hashedCode = product.toString().padStart(6, '0');
+            }
+            resultElement.textContent = prefixText + hashedCode;
+        }
+        function copyResult() {
+            const codeToCopy = resultElement.textContent;
+            const showSuccessFeedback = () => {
+                copyButton.classList.add('copied');
+                setTimeout(() => { copyButton.classList.remove('copied'); }, 2000);
+            };
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(codeToCopy).then(showSuccessFeedback).catch(() => fallbackCopyTextToClipboard(codeToCopy));
+            } else {
+                fallbackCopyTextToClipboard(codeToCopy);
+            }
+        }
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.top = "-9999px";
+            textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                if (document.execCommand('copy')) {
+                    const showSuccessFeedback = () => {
+                        copyButton.classList.add('copied');
+                        setTimeout(() => { copyButton.classList.remove('copied'); }, 2000);
+                    };
+                    showSuccessFeedback();
+                }
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+            document.body.removeChild(textArea);
+        }
+        function init() {
+            const debouncedCalculate = debounce(calculateAndDisplay);
+            prefixElement.addEventListener('input', debouncedCalculate);
+            hashInputElement.addEventListener('input', debouncedCalculate);
+            copyButton.addEventListener('click', copyResult);
+        }
+        init();
+    </script>
+</body>
+</html>
