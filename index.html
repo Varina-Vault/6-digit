@@ -148,26 +148,26 @@
                         }
                         return prefix + hashedCode;
                     },
-                    copyToClipboard(text) {
-                        const temp = document.createElement("textarea");
-                        temp.value = text;
-                        // SỬA LỖI: Style hoàn hảo để chống giật màn hình
-                        temp.style.position = 'fixed';
-                        temp.style.top = '-9999px';
-                        temp.style.left = '-9999px';
-                        temp.style.opacity = '0';
-                        temp.style.pointerEvents = 'none';
-
-                        document.body.appendChild(temp);
-                        let success = false;
-                        try {
+                    copyToClipboard(text, successCallback, failureCallback) {
+                        // Ưu tiên API hiện đại
+                        if (navigator.clipboard && window.isSecureContext) {
+                            navigator.clipboard.writeText(text).then(successCallback).catch(failureCallback);
+                        } else {
+                            // Fallback cho môi trường không an toàn (như file:///)
+                            const temp = document.createElement("textarea");
+                            temp.value = text;
+                            temp.style.position = 'fixed';
+                            temp.style.opacity = '0';
+                            temp.style.pointerEvents = 'none';
+                            document.body.appendChild(temp);
                             temp.select();
-                            success = document.execCommand('copy');
-                        } catch (err) {
-                            console.error('Copy failed', err);
+                            try {
+                                document.execCommand('copy') ? successCallback() : failureCallback();
+                            } catch (err) {
+                                failureCallback(err);
+                            }
+                            document.body.removeChild(temp);
                         }
-                        document.body.removeChild(temp);
-                        return success;
                     }
                 },
 
@@ -179,14 +179,20 @@
                     },
                     handleCopy() {
                         const text = App.dom.result.textContent;
-                        if (App.logic.copyToClipboard(text)) {
+                        
+                        const onCopySuccess = () => {
                             App.dom.copyBtn.classList.add('success');
                             setTimeout(() => {
                                 App.dom.copyBtn.classList.remove('success');
                             }, App.config.FEEDBACK_DURATION);
-                        } else {
+                        };
+                        
+                        const onCopyFailure = (err) => {
+                            console.error('Copy failed', err);
                             alert('Copy failed!');
-                        }
+                        };
+                        
+                        App.logic.copyToClipboard(text, onCopySuccess, onCopyFailure);
                     }
                 }
             };
