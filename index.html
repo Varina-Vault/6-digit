@@ -5,216 +5,188 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>6-Digit Generator</title>
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #22d3ee;
-            --success-color: #4ade80;
-            --background-color: #111827;
-            --card-background: #1f2937;
-            --text-color: #e5e7eb;
-            --text-light: #9ca3af;
-            --border-color: #4b5563;
+            --bg-color: #0d1117;
+            --surface-color: #161b22;
+            --primary-color: #39c5f7;
+            --border-color: rgba(139, 148, 158, 0.3);
+            --text-color: #c9d1d9;
+            --text-color-muted: #8b949e;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--background-color);
+            font-family: 'Roboto Mono', monospace;
+            background-color: var(--bg-color);
             color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;
         }
+        .container { width: 100%; max-width: 500px; }
         .card {
-            background-color: var(--card-background);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 24px;
+            display: flex; flex-direction: column; gap: 1.5rem;
             text-align: center;
-            width: 100%;
-            max-width: 500px;
         }
         h1 {
-            font-weight: 300;
-            font-size: 2rem;
-            margin: 0 0 40px 0;
+            font-weight: 500; font-size: 1.5rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 5px rgba(57, 197, 247, 0.5);
+            margin: 0 0 1rem 0;
         }
         .text-input {
-            width: 100%;
-            border: none;
-            border-bottom: 2px solid var(--border-color);
-            padding: 12px 0;
-            font-size: 1.2rem;
+            background-color: #010409; color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 12px;
+            font-size: 1.2rem; font-family: 'Roboto Mono', monospace; 
+            transition: border-color 0.3s; width: 100%;
             text-align: center;
-            background-color: transparent;
-            color: var(--text-color);
-            transition: border-color 0.3s ease;
-            box-sizing: border-box;
         }
         .text-input:focus {
-            outline: none;
-            border-bottom-color: var(--primary-color);
+            outline: none; border-color: var(--primary-color);
         }
         .text-input::placeholder {
-            color: var(--text-light);
-            font-weight: 300;
-        }
-        #stringToHash {
-            margin-top: 25px;
+            color: var(--text-color-muted);
         }
         .result-wrapper {
-            margin-top: 40px;
             position: relative;
-            background-color: rgba(0,0,0,0.2);
-            border-radius: 8px;
+            background-color: #010409;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
             padding: 15px 60px 15px 20px;
-            min-height: 40px;
+            min-height: 28px;
             display: flex;
             align-items: center;
+            justify-content: flex-start;
+            margin-top: 1rem;
         }
         #result {
-            font-family: 'Roboto Mono', monospace;
             font-size: 1.5rem;
-            font-weight: 500;
+            font-weight: 700;
             color: var(--primary-color);
-            text-align: left;
             word-break: break-all;
         }
-        #copyButton {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s ease, transform 0.2s ease;
+        .action-icon-btn {
+            position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
+            width: 36px; height: 36px; background: transparent; 
+            border: 1px solid transparent; border-radius: 50%; 
+            color: var(--text-color-muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
         }
-        #copyButton:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-50%) scale(1.1);
+        .action-icon-btn .material-icons { font-size: 20px; }
+        .action-icon-btn:hover { background-color: rgba(57, 197, 247, 0.1); color: var(--primary-color); }
+        .action-icon-btn.success {
+            background-color: var(--primary-color);
+            color: #000;
         }
-        #copyButton:active {
-            transform: translateY(-50%) scale(0.95);
-        }
-        #copyButton .icon {
-            width: 24px;
-            height: 24px;
-            stroke: var(--text-light);
-            transition: stroke 0.2s ease;
-        }
-        #copyButton:hover .icon {
-            stroke: var(--text-color);
-        }
-        #copyButton .icon-check {
-            display: none;
-        }
-        #copyButton.copied {
-            background-color: var(--success-color);
-            transform: translateY(-50%) scale(1.1);
-        }
-        #copyButton.copied .icon-copy {
-            display: none;
-        }
-        #copyButton.copied .icon-check {
-            display: inline-block;
-            stroke: var(--card-background);
-        }
+        .icon-check { display: none; }
+        .action-icon-btn.success .icon-copy { display: none; }
+        .action-icon-btn.success .icon-check { display: inline; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>Prefix & Code Generator</h1>
-        <input type="text" id="prefixString" class="text-input" placeholder="Enter prefix..." autocomplete="off">
-        <input type="text" id="stringToHash" class="text-input" placeholder="String to hash..." autocomplete="off">
-        <div class="result-wrapper">
-            <div id="result">000000</div>
-            <button id="copyButton" title="Copy to clipboard">
-                <svg class="icon icon-copy" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
-                <svg class="icon icon-check" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-            </button>
+    <div class="container">
+        <div class="card">
+            <h1>6-Digit Generator</h1>
+            <input type="text" id="prefixString" class="text-input" placeholder="Enter prefix..." autocomplete="off">
+            <input type="text" id="stringToHash" class="text-input" placeholder="String to hash..." autocomplete="off">
+            <div class="result-wrapper">
+                <div id="result">000000</div>
+                <button id="copyButton" class="action-icon-btn" title="Copy to clipboard">
+                    <i class="material-icons icon-copy">content_copy</i>
+                    <i class="material-icons icon-check">check</i>
+                </button>
+            </div>
         </div>
     </div>
     <script>
-        const prefixElement = document.getElementById('prefixString');
-        const hashInputElement = document.getElementById('stringToHash');
-        const resultElement = document.getElementById('result');
-        const copyButton = document.getElementById('copyButton');
-        const MODULO_VALUE = 1000000n;
-        function debounce(func, delay = 150) {
-            let timeoutId;
-            return (...args) => {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => {
-                    func.apply(this, args);
-                }, delay);
-            };
-        }
-        function calculateAndDisplay() {
-            const prefixText = prefixElement.value;
-            const hashText = hashInputElement.value;
-            let hashedCode = '000000';
-            if (hashText.length > 0) {
-                let product = 1n;
-                for (const char of hashText) {
-                    const unicodeValue = BigInt(char.charCodeAt(0));
-                    product = (product * unicodeValue) % MODULO_VALUE;
-                }
-                hashedCode = product.toString().padStart(6, '0');
-            }
-            resultElement.textContent = prefixText + hashedCode;
-        }
-        function copyResult() {
-            const codeToCopy = resultElement.textContent;
-            const showSuccessFeedback = () => {
-                copyButton.classList.add('copied');
-                setTimeout(() => { copyButton.classList.remove('copied'); }, 2000);
-            };
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(codeToCopy).then(showSuccessFeedback).catch(() => fallbackCopyTextToClipboard(codeToCopy));
-            } else {
-                fallbackCopyTextToClipboard(codeToCopy);
-            }
-        }
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.top = "-9999px";
-            textArea.style.left = "-9999px";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                if (document.execCommand('copy')) {
-                    const showSuccessFeedback = () => {
-                        copyButton.classList.add('copied');
-                        setTimeout(() => { copyButton.classList.remove('copied'); }, 2000);
+        document.addEventListener('DOMContentLoaded', () => {
+            const App = {
+                dom: {},
+                config: {
+                    MODULO: 1000000n,
+                    DEBOUNCE_DELAY: 150,
+                    FEEDBACK_DURATION: 1500,
+                },
+
+                init() {
+                    this.dom = {
+                        prefix: document.getElementById('prefixString'),
+                        hashInput: document.getElementById('stringToHash'),
+                        result: document.getElementById('result'),
+                        copyBtn: document.getElementById('copyButton'),
                     };
-                    showSuccessFeedback();
+                    this.bindEvents();
+                },
+
+                bindEvents() {
+                    const debouncedHandler = this.logic.debounce(this.handlers.handleInput, this.config.DEBOUNCE_DELAY);
+                    this.dom.prefix.addEventListener('input', debouncedHandler);
+                    this.dom.hashInput.addEventListener('input', debouncedHandler);
+                    this.dom.copyBtn.addEventListener('click', this.handlers.handleCopy);
+                },
+
+                logic: {
+                    debounce(func, delay) {
+                        let timeoutId;
+                        return (...args) => {
+                            clearTimeout(timeoutId);
+                            timeoutId = setTimeout(() => func.apply(this, args), delay);
+                        };
+                    },
+                    generateCode(prefix, hashString) {
+                        let hashedCode = '000000';
+                        if (hashString.length > 0) {
+                            let product = 1n;
+                            for (let i = 0; i < hashString.length; i++) {
+                                product = (product * BigInt(hashString.charCodeAt(i))) % App.config.MODULO;
+                            }
+                            hashedCode = product.toString().padStart(6, '0');
+                        }
+                        return prefix + hashedCode;
+                    },
+                    copyToClipboard(text) {
+                        const temp = document.createElement("textarea");
+                        temp.value = text;
+                        temp.style.position = 'absolute'; temp.style.left = '-9999px';
+                        document.body.appendChild(temp);
+                        let success = false;
+                        try {
+                            temp.select();
+                            success = document.execCommand('copy');
+                        } catch (err) {
+                            console.error('Copy failed', err);
+                        }
+                        document.body.removeChild(temp);
+                        return success;
+                    }
+                },
+
+                handlers: {
+                    handleInput() {
+                        const prefix = App.dom.prefix.value;
+                        const hashString = App.dom.hashInput.value;
+                        App.dom.result.textContent = App.logic.generateCode(prefix, hashString);
+                    },
+                    handleCopy() {
+                        const text = App.dom.result.textContent;
+                        if (App.logic.copyToClipboard(text)) {
+                            App.dom.copyBtn.classList.add('success');
+                            setTimeout(() => {
+                                App.dom.copyBtn.classList.remove('success');
+                            }, App.config.FEEDBACK_DURATION);
+                        } else {
+                            alert('Copy failed!');
+                        }
+                    }
                 }
-            } catch (err) {
-                console.error('Fallback copy failed', err);
-            }
-            document.body.removeChild(textArea);
-        }
-        function init() {
-            const debouncedCalculate = debounce(calculateAndDisplay);
-            prefixElement.addEventListener('input', debouncedCalculate);
-            hashInputElement.addEventListener('input', debouncedCalculate);
-            copyButton.addEventListener('click', copyResult);
-        }
-        init();
+            };
+
+            App.init();
+        });
     </script>
 </body>
 </html>
