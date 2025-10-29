@@ -151,23 +151,17 @@
                     copyToClipboard(text) {
                         const temp = document.createElement("textarea");
                         temp.value = text;
-                        // SỬA LỖI: Style để textarea hoàn toàn không ảnh hưởng layout
+                        // SỬA LỖI: Style hoàn hảo để chống giật màn hình
                         temp.style.position = 'fixed';
-                        temp.style.top = '0';
-                        temp.style.left = '0';
-                        temp.style.width = '1px';
-                        temp.style.height = '1px';
-                        temp.style.padding = '0';
-                        temp.style.border = 'none';
-                        temp.style.outline = 'none';
-                        temp.style.boxShadow = 'none';
-                        temp.style.background = 'transparent';
-                        
+                        temp.style.top = '-9999px';
+                        temp.style.left = '-9999px';
+                        temp.style.opacity = '0';
+                        temp.style.pointerEvents = 'none';
+
                         document.body.appendChild(temp);
                         let success = false;
                         try {
                             temp.select();
-                            temp.setSelectionRange(0, 99999); // For mobile devices
                             success = document.execCommand('copy');
                         } catch (err) {
                             console.error('Copy failed', err);
